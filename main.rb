@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'slim'
 require 'sass'
+require './song'
 
 get('/styles.css') { scss :styles }
 get '/' do
