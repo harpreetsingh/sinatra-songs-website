@@ -17,6 +17,7 @@ class Song
   property :lyrics, Text
   property :length, Integer
   property :released_on, Date
+  property :likes, Integer, :default => 0
 
   def released_on=date
     super Date.strptime(date, '%m/%d/%Y')
@@ -68,4 +69,10 @@ delete '/songs/:id' do
   redirect to("/songs")
 end
 
-
+post '/songs/:id/like' do
+  @song = Song.get(params[:id])
+  @song.likes = @song.likes.next
+  @song.save
+  redirect to"/songs/#{@song.id}" unless request.xhr?
+  slim :like, :layout => false
+end
