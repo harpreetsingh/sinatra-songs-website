@@ -1,6 +1,7 @@
 require 'dm-core'
 require 'dm-migrations'
 
+
 configure :development do
   DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/development.db")
 end
@@ -32,6 +33,7 @@ end
 
 post '/songs' do
   song = Song.create(params[:song])
+  flash[:notice] = "Song successfully added" if song
   redirect to("/songs/#{song.id}")
 end
 
@@ -53,12 +55,16 @@ end
 
 put '/songs/:id' do
   song = Song.get(params[:id])
-  song.update(params[:song])
+  if song.update(params[:song])
+    flash[:notice] = "Song successfully updated"
+  end
   redirect to("/songs/#{song.id}")
 end
 
 delete '/songs/:id' do
-  Song.get(params[:id]).destroy
+  if Song.get(params[:id]).destroy
+    flash[:notice] = "Song deleted"
+  end
   redirect to("/songs")
 end
 

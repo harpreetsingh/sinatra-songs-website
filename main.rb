@@ -2,11 +2,26 @@ require 'sinatra'
 require 'slim'
 require 'sass'
 require './song'
+require 'sinatra/flash'
 
 configure do
   enable :sessions
   set :username, 'amitabh'
   set :password, 'amit123'
+end
+
+before do 
+  set_title
+end
+
+helpers do
+  def current?(path='/')
+    (request.path==path || request.path==path + '/') ? "current" : nil
+  end
+
+  def set_title 
+    @title ||= "Amitabh Bachchan Songs"
+  end
 end
 
 get('/styles.css') { scss :styles }
@@ -45,5 +60,4 @@ end
 not_found do
   slim :not_found
 end
-
 
