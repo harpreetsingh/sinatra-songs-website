@@ -1,7 +1,13 @@
 require 'dm-core'
 require 'dm-migrations'
 
-DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/development.db")
+configure :development do
+  DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/development.db")
+end
+
+configure :production do
+  DataMapper.setup(:default, ENV['DATABASE_URL'])
+end
 
 class Song
   include DataMapper::Resource
@@ -30,6 +36,7 @@ post '/songs' do
 end
 
 get '/songs/new' do
+  halt(401, 'Not authorized') unless session[:admin]
   @song = Song.new
   slim :new_song
 end
